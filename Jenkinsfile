@@ -7,6 +7,15 @@ pipeline {
         DOCKER_CRED = 'dockerhub-cred'
     }
 
+    parameters {
+        booleanParam(name: 'FORCE_BUILD', defaultValue: false, description: 'Force build even if no changes')
+    }
+
+    options {
+        skipDefaultCheckout()  // Prevent automatic checkout
+        buildDiscarder(logRotator(numToKeepStr: '10'))  // Keep last 10 builds
+        disableConcurrentBuilds()
+    }
 
     stages {
         
@@ -52,11 +61,8 @@ pipeline {
     }
 
     post {
-        success {
-            echo "Deployment successful!"
-        }
-        failure {
-            echo "Deployment failed. Check logs."
+        always {
+            echo "Build finished. Check the app at http://http://54.226.105.204/"
         }
     }
 }
