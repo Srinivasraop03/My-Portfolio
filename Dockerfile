@@ -1,8 +1,11 @@
-# Use a lightweight web server image
+# Use official Nginx image
 FROM nginx:alpine
 
-# Copy all HTML/CSS files to Nginx default folder
-COPY . /usr/share/nginx/html
+# Remove default Nginx content
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy your portfolio files into the container
+COPY . /usr/share/nginx/html/
 
 # Expose port 80
 EXPOSE 80
