@@ -7,6 +7,14 @@ pipeline {
         DOCKER_CRED = 'dockerhub-cred'
     }
 
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+        
     stages {
         stage('Checkout Code') {
             steps {
