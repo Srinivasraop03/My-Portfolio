@@ -63,7 +63,7 @@ pipeline {
 
     post {
         always {
-            echo "Build finished. Check the app at http://http://54.226.105.204/"
+            echo "Build finished. Check the app at http://54.226.105.204/"
         }
     }
 }
