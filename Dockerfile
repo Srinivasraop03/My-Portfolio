@@ -1,10 +1,8 @@
-# Use Nginx official image
+# Use a lightweight web server image
 FROM nginx:alpine
 
-# Copy website files
-COPY html/ /usr/share/nginx/html/
-COPY css/ /usr/share/nginx/html/css/
-COPY logo.png /usr/share/nginx/html/
+# Copy all HTML/CSS files to Nginx default folder
+COPY . /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80

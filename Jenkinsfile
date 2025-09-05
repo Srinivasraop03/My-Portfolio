@@ -2,50 +2,44 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "my-portfolio"
-        DOCKER_REGISTRY = "srinivasraop03"
+        DOCKERHUB_USER = 'srinivasraop03'
+        DOCKERHUB_REPO = 'my-portfolio'
+        DOCKER_CRED = 'dockerhub-cred'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/Srinivasraop03/My-Portfolio.git'
+                git branch: 'main', url: 'https://github.com/Srinivasraop03/My-Portfolio.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest")
+                    dockerImage = docker.build("${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${BUILD_NUMBER}")
                 }
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'srinivasraop03', passwordVariable: 'Srivv@1992')]) {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
-                            docker.image("${IMAGE_NAME}:latest").push()
-                        }
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CRED}") {
+                        dockerImage.push()
+                        dockerImage.push("latest")
                     }
                 }
             }
         }
 
-        stage('Deploy via Ansible') {
+        stage('Deploy on EC2') {
             steps {
-                ansiblePlaybook credentialsId: 'ssh-credentials', playbook: 'ansible/deploy.yml'
+                sh """
+                  docker rm -f portfolio-app || true
+                  docker run -d -p 80:80 --name portfolio-app ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest
+                """
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Deployment Successful!"
-        }
-        failure {
-            echo "Pipeline Failed!"
         }
     }
 }
