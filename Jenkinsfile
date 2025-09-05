@@ -9,7 +9,7 @@ pipeline {
 
 
     stages {
-
+        
         stage('Clean Workspace') {
             steps {
                 deleteDir()
@@ -48,15 +48,15 @@ pipeline {
                   docker run -d -p 80:80 --name portfolio-app ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest
                 """
             }
-        
-        post {
+        }
+    }
+
+    post {
         success {
             echo "Deployment successful!"
         }
         failure {
             echo "Deployment failed. Check logs."
-        }
-        
         }
     }
 }
