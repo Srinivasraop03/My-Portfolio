@@ -9,13 +9,13 @@ pipeline {
 
 
     stages {
+        
         stage('Clean Workspace') {
             steps {
                 deleteDir()
             }
         }
-        
-    stages {
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/Srinivasraop03/My-Portfolio.git'
