@@ -53,8 +53,9 @@ pipeline {
         stage('Deploy on EC2') {
             steps {
                 sh """
-                  docker rm -f portfolio-app || true
-                  docker run -d -p 80:80 --name portfolio-app ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest
+                    docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest
+                    docker rm -f portfolio-app || true
+                    docker run -d -p 80:80 --name portfolio-app ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest
                 """
             }
         }
